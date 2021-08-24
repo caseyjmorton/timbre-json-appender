@@ -95,7 +95,7 @@
      {:enabled? true
       :async? false
       :min-level nil
-      :fn (fn [{:keys [instant level ?ns-str ?file ?line ?err vargs ?msg-fmt hostname_ context] :as data}]
+      :fn (fn [{:keys [instant level ?ns-str ?file ?line ?err vargs ?msg-fmt appender-id hostname_ context] :as data}]
             (let [;; apply context prior to resolving vargs so specific log values override context values
                   base-log-map (cond
                                  (and (not inline-args?) (seq context)) {:args context}
@@ -111,6 +111,7 @@
                               (cond->
                                (should-log-field-fn :thread data) (assoc :thread #?(:clj (.getName (Thread/currentThread))
                                                                                     :cljs nil))
+                               (should-log-field-fn :appender-id data) (assoc :appender-id appender-id)
                                (should-log-field-fn :file data) (assoc :file ?file)
                                (should-log-field-fn :line data) (assoc :line ?line)
                                (should-log-field-fn :ns data) (assoc :ns ?ns-str)
